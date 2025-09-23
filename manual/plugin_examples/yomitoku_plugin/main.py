@@ -15,8 +15,6 @@ from qt.core import QAction, QMessageBox
 
 # The base class that all tools must inherit from
 from calibre.gui2.tweak_book.plugin import Tool
-from calibre_plugins.yomitoku_plugin.config import prefs
-from calibre_plugins.yomitoku_plugin.options_dialog import OptionsDialog
 
 class OCRTool(Tool):
 
@@ -30,6 +28,10 @@ class OCRTool(Tool):
         return ac
 
     def run_ocr(self):
+        # Move imports inside the method to prevent issues with plugin loading
+        from calibre_plugins.yomitoku_plugin.config import prefs
+        from calibre_plugins.yomitoku_plugin.options_dialog import OptionsDialog
+
         # Show the options dialog first
         ok, options = OptionsDialog.get_options(self.gui)
         if not ok:
