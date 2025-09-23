@@ -5,19 +5,41 @@ __license__   = 'GPL v3'
 __copyright__ = '2023, Jules'
 __docformat__ = 'restructuredtext en'
 
-from calibre.customize import EditBookToolPlugin
+from calibre.customize import EditBookToolPlugin, InterfaceActionBase
 
-class YomitokuPlugin(EditBookToolPlugin):
+# A single plugin package (ZIP file) can contain multiple plugin classes.
+# Calibre will load each one based on its base class.
 
-    name = 'Yomitoku OCR'
-    version = (0, 2, 0)
+# --- Plugin for the Book Editor Toolbar ---
+class YomitokuEditorTool(EditBookToolPlugin):
+
+    name = 'Yomitoku OCR (Editor Tool)'
+    version = (0, 3, 0)
     author = 'Jules'
     supported_platforms = ['windows', 'osx', 'linux']
     description = 'Run Yomitoku OCR on images within the Calibre Book Editor.'
     minimum_calibre_version = (5, 0, 0)
 
     def is_customizable(self):
-        # The configuration is still needed for the yomitoku path.
+        # The configuration is shared, but we only show the button in one place
+        # to avoid confusion. We'll let the InterfaceAction plugin handle it.
+        return False
+
+# --- Plugin for the Library View ---
+class YomitokuLibraryAction(InterfaceActionBase):
+
+    name                = 'Yomitoku OCR'
+    description         = 'Run Yomitoku OCR on selected books or add new ones from files.'
+    supported_platforms = ['windows', 'osx', 'linux']
+    author              = 'Jules'
+    version             = (0, 3, 0)
+    minimum_calibre_version = (5, 0, 0)
+
+    #: This field defines the GUI plugin class that contains all the code
+    #: that actually does something. Its format is module_path:class_name
+    actual_plugin       = 'calibre_plugins.yomitoku_plugin.library_action:LibraryAction'
+
+    def is_customizable(self):
         return True
 
     def config_widget(self):

@@ -31,6 +31,7 @@ class OCRTool(Tool):
         # Move imports inside the method to prevent issues with plugin loading
         from calibre_plugins.yomitoku_plugin.config import prefs
         from calibre_plugins.yomitoku_plugin.options_dialog import OptionsDialog
+        from calibre_plugins.yomitoku_plugin.utils import extract_text_from_json
 
         # Show the options dialog first
         ok, options = OptionsDialog.get_options(self.gui)
@@ -85,7 +86,7 @@ class OCRTool(Tool):
                 with open(json_file_path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
 
-                all_text = self.extract_text_from_json(data)
+                all_text = extract_text_from_json(data)
 
                 root = container.parsed(html_to_modify)
 
@@ -127,18 +128,3 @@ class OCRTool(Tool):
                 if referenced_name == image_name:
                     return img_tag
         return None
-
-    def extract_text_from_json(self, data):
-        all_text = []
-        def find_text_recursively(d):
-            if isinstance(d, dict):
-                for k, v in d.items():
-                    if k == 'text':
-                        all_text.append(v)
-                    else:
-                        find_text_recursively(v)
-            elif isinstance(d, list):
-                for item in d:
-                    find_text_recursively(item)
-        find_text_recursively(data)
-        return all_text
