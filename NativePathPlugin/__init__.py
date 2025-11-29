@@ -8,7 +8,8 @@ class NativePathPlugin(InterfaceActionBase):
     author              = 'Jules'
     version             = (1, 0, 0)
     minimum_calibre_version = (5, 0, 0)
-    actual_plugin       = 'calibre_plugins.native_path.ui:NativePathAction'
+    # The module name matches the zip filename (minus extension)
+    actual_plugin       = 'calibre_plugins.NativePathPlugin.ui:NativePathAction'
 
     def is_customizable(self):
         return False
